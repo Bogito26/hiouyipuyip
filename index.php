@@ -1,0 +1,55 @@
+<?php
+
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+/*
+|--------------------------------------------------------------------------
+| Check If The Application Is Under Maintenance
+|--------------------------------------------------------------------------
+|
+| If the application is in maintenance / demo mode via the "down" command
+| we will require the "down" file to be present so that it can load
+| that file. This allows us to get the maintenance mode event details.
+|
+*/
+
+if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+    require __DIR__.'/../storage/framework/maintenance.php';
+}
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| our application. We just need to utilize it! We'll simply require it
+| into the script here so that we don't have to worry about the manual
+| loading any of our classes later on. It feels nice to relax.
+|
+*/
+
+require __DIR__.'/../vendor/autoload.php';
+
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can handle the incoming request using
+| the application's HTTP kernel. Then, we will send the response back
+| to this client's browser, allowing them to enjoy our application.
+|
+*/
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+$response = $kernel->handle(
+    $request = Request::capture()
+)->send();
+
+$kernel->terminate($request, $response);
